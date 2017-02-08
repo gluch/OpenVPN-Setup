@@ -17,9 +17,15 @@ apt-get -y upgrade
 apt-get -y install openvpn
 apt-get install easy-rsa
 
-# Read the local and public IP addresses from the user
+# Read local IP on eth0 automatically
+INTERNALIP="/sbin/ifconfig eth0 | grep \"inet addr\" | cut -d ':' -f 2 | cut -d ' ' -f 1"
+
+# Execute INTERNALIP command, in order to get IP into variable CONFIRMINTERNALIP
+CONFIRMINTERNALIP=`eval $INTERNALIP`
+
+# Read the local and public IP addresses from the system and confirm by user
 LOCALIP=$(whiptail --inputbox "What is your Raspberry Pi's local IP address?" \
-8 78 --title "Setup OpenVPN" 3>&1 1>&2 2>&3)
+8 78 $CONFIRMINTERNALIP --title "Setup OpenVPN" 3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
  whiptail --title "Setup OpenVPN" --infobox "Local IP: $LOCALIP" 8 78
@@ -32,10 +38,10 @@ fi
 EXTERNALIP="/usr/bin/dig +short myip.opendns.com @resolver1.opendns.com"
 
 # Execute EXTERNALIP command, in order to get IP into variable CONFIRMIP
-CONFIRMIP=`eval $EXTERNALIP`
+CONFIRMEXTERNALIP=`eval $EXTERNALIP`
 
 PUBLICIP=$(whiptail --inputbox "What is the public IP address of network the \
-Raspberry Pi is on?" 8 78 $CONFIRMIP --title "OpenVPN Setup" 3>&1 1>&2 2>&3)
+Raspberry Pi is on?" 8 78 $CONFIRMEXTERNALIP --title "OpenVPN Setup" 3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
  whiptail --title "Setup OpenVPN" --infobox "PUBLIC IP: $PUBLICIP" 8 78
