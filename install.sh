@@ -28,8 +28,14 @@ else
  exit
 fi
 
+# Read external IP
+EXTERNALIP="/usr/bin/dig +short myip.opendns.com @resolver1.opendns.com"
+
+# Execute EXTERNALIP command, in order to get IP into variable CONFIRMIP
+CONFIRMIP=`eval $EXTERNALIP`
+
 PUBLICIP=$(whiptail --inputbox "What is the public IP address of network the \
-Raspberry Pi is on?" 8 78 --title "OpenVPN Setup" 3>&1 1>&2 2>&3)
+Raspberry Pi is on?" 8 78 $CONFIRMIP --title "OpenVPN Setup" 3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus = 0 ]; then
  whiptail --title "Setup OpenVPN" --infobox "PUBLIC IP: $PUBLICIP" 8 78
