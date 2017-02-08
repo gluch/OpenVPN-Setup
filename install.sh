@@ -16,6 +16,7 @@ apt-get update
 apt-get -y upgrade
 apt-get -y install openvpn
 apt-get install easy-rsa
+apt-get install dnsutils
 
 # Read local IP on eth0 automatically
 INTERNALIP="/sbin/ifconfig eth0 | grep \"inet addr\" | cut -d ':' -f 2 | cut -d ' ' -f 1"
